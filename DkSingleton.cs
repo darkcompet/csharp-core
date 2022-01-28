@@ -4,18 +4,18 @@ namespace Tool.Compet.Core {
 	/// Note that, subclass must provide public empty constructor for initialization.
 	public class DkSingleton<T> { //: ScriptableObject where T : ScriptableObject {
 		private static T defaultInstance = default!;
-	
+
 		public static T instance {
 			get {
 				if (defaultInstance == null) {
 					var type = typeof(T);
-	
+
 					lock (type) {
 						if (defaultInstance == null) {
 							defaultInstance = (T)System.Activator.CreateInstance(type)!;
-	
+
 							if (DkBuildConfig.DEBUG) {
-								Console.WriteLine($"{type.Name}-singleton~ created defaultInstance: {defaultInstance?.GetType().Name}");
+								UnityEngine.Debug.Log($"{type.Name}-singleton~ created defaultInstance: {defaultInstance?.GetType().Name}");
 							}
 						}
 					}
