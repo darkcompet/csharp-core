@@ -15,7 +15,7 @@ namespace Tool.Compet.Core {
 							defaultInstance = (T)System.Activator.CreateInstance(type)!;
 
 							if (DkBuildConfig.DEBUG) {
-								UnityEngine.Debug.Log($"{type.Name}-singleton~ created defaultInstance: {defaultInstance?.GetType().Name}");
+								System.Console.WriteLine($"{type.Name}-singleton~ created defaultInstance: {defaultInstance?.GetType().Name}");
 							}
 						}
 					}
