@@ -1,6 +1,6 @@
 namespace Tool.Compet.Core {
 	/// Extension for string.
-	public static class TheStringExt {
+	public static class StringExt {
 		/// Compare 2 strings with `Ordinal` comparision (byte-level).
 		public static bool EqualsDk(this string? me, string? other) {
 			return me == null ? other == null : me.Equals(other, System.StringComparison.Ordinal);
