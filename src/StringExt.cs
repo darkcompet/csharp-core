@@ -71,5 +71,25 @@ namespace Tool.Compet.Core {
 			}
 			return defaultValue;
 		}
+
+		/// Get first index of given `element` in the array. Returns -1 if not found.
+		public static int IndexOfDk(this string[] me, string? element) {
+			for (int index = 0, N = me.Length; index < N; ++index) {
+				if (me[index].EqualsDk(element)) {
+					return index;
+				}
+			}
+			return -1;
+		}
+
+		/// Get last index of given `element` in the array. Returns -1 if not found.
+		public static int LastIndexOfDk(this string[] me, string? element) {
+			for (var index = me.Length - 1; index >= 0; --index) {
+				if (me[index].EqualsDk(element)) {
+					return index;
+				}
+			}
+			return -1;
+		}
 	}
 }
