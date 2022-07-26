@@ -1,7 +1,7 @@
-# Core on Net
+# Core for C#
 
 This provides fundamental language-level features for all C#-based projects.
-This aims to support all projects as possible.
+This aims to support all frameworks (.NET Core, .NET Framework, .NET Standard,...) as possible.
 
 - Features
 
