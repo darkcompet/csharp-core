@@ -44,6 +44,13 @@ namespace Tool.Compet.Core {
 			return defaultValue;
 		}
 
+		public static byte ParseByteDk(this string? me, byte defaultValue = 0) {
+			if (byte.TryParse(me, out var result)) {
+				return result;
+			}
+			return defaultValue;
+		}
+
 		public static int ParseIntDk(this string? me, int defaultValue = 0) {
 			if (int.TryParse(me, out var result)) {
 				return result;
