@@ -65,6 +65,13 @@ namespace Tool.Compet.Core {
 			return defaultValue;
 		}
 
+		public static decimal ParseDecimalDk(this string? me, decimal defaultValue = 0m) {
+			if (decimal.TryParse(me, out var result)) {
+				return result;
+			}
+			return defaultValue;
+		}
+
 		public static float ParseFloatDk(this string? me, float defaultValue = 0F) {
 			if (float.TryParse(me, out var result)) {
 				return result;
