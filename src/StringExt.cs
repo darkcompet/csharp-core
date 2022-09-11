@@ -29,10 +29,13 @@ namespace Tool.Compet.Core {
 			return me.EndsWith(value, System.StringComparison.Ordinal);
 		}
 
+		/// @param startIndex: Inclusive.
 		public static string SubstringDk(this string me, int startIndex) {
 			return me.Substring(startIndex, me.Length - startIndex);
 		}
 
+		/// @param startIndex: Inclusive.
+		/// @param endIndex: Exclusive.
 		public static string SubstringDk(this string me, int startIndex, int endIndex) {
 			return me.Substring(startIndex, endIndex - startIndex);
 		}
