@@ -54,6 +54,13 @@ namespace Tool.Compet.Core {
 			return defaultValue;
 		}
 
+		public static short ParseShortDk(this string? me, short defaultValue = 0) {
+			if (short.TryParse(me, out var result)) {
+				return result;
+			}
+			return defaultValue;
+		}
+
 		public static int ParseIntDk(this string? me, int defaultValue = 0) {
 			if (int.TryParse(me, out var result)) {
 				return result;
