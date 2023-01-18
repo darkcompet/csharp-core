@@ -1,6 +1,6 @@
 namespace Tool.Compet.Core {
 	/// Extension for string.
-	public static class StringExt {
+	public static class DkStrings {
 		/// Compare 2 strings with `Ordinal` comparision (byte-level).
 		public static bool EqualsDk(this string? me, string? other) {
 			return me == null ? other == null : me.Equals(other, System.StringComparison.Ordinal);
@@ -97,9 +97,9 @@ namespace Tool.Compet.Core {
 		}
 
 		/// Get first index of given `element` in the array. Returns -1 if not found.
-		public static int IndexOfDk(this string[] me, string? element) {
-			for (int index = 0, N = me.Length; index < N; ++index) {
-				if (me[index].EqualsDk(element)) {
+		public static int IndexOfDk(this string[] arr, string? element) {
+			for (int index = 0, N = arr.Length; index < N; ++index) {
+				if (arr[index].Equals(element, System.StringComparison.Ordinal)) {
 					return index;
 				}
 			}
@@ -107,9 +107,9 @@ namespace Tool.Compet.Core {
 		}
 
 		/// Get last index of given `element` in the array. Returns -1 if not found.
-		public static int LastIndexOfDk(this string[] me, string? element) {
-			for (var index = me.Length - 1; index >= 0; --index) {
-				if (me[index].EqualsDk(element)) {
+		public static int LastIndexOfDk(this string[] arr, string? element) {
+			for (var index = arr.Length - 1; index >= 0; --index) {
+				if (arr[index].Equals(element, System.StringComparison.Ordinal)) {
 					return index;
 				}
 			}
