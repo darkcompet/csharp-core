@@ -25,5 +25,14 @@ namespace Tool.Compet.Core {
 
 			return res;
 		}
+
+		// Calculate polynomial function: y(x) = c + x * (b + x * (a + x * 0))
+		public static long Poly(long[] arr, long x) {
+			var p = 0L;
+			for (int index = 0, N = arr.Length; index < N; ++index) {
+				p = arr[index] + x * p;
+			}
+			return p;
+		}
 	}
 }
