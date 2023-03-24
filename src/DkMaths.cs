@@ -1,12 +1,19 @@
 namespace Tool.Compet.Core {
 	public class DkMaths {
 		/// Perform fast pow via binary method.
+		/// We use method 1 for more simple.
+
 		/// Method 1: express n as binary (0, 1)
 		/// 19 = 10011
-		/// x^19 = x^(2^4) * x^(2^1) * x^(2^0)
+		/// x^19 = x^16 * x^2 * x^1
+		/// For 0: just square current x
+		/// For 1: multiply current x with result -> square current x
+
 		/// Method 2: split n as binary
 		/// x => x^2 => x^4 => x^9 => x^19
 		/// path: 0011, 19 = 10011
+		/// For 0: just square current x
+		/// For 1: multiply result with original x
 		public static long Pow(long x, int n) {
 			if (n < 0) {
 				return 0;
