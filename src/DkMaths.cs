@@ -5,10 +5,11 @@ namespace Tool.Compet.Core {
 		/// Method 2: x^9 = x^4 * x^4 * x
 		public static long Pow(long x, int n) {
 			if (n < 0) {
-				return 1L / Pow(x, -n);
+				var ans = Pow(x, -n);
+				return ans == 0 ? 0 : 1 / ans;
 			}
 			if (n == 0) {
-				return 1L;
+				return 1;
 			}
 			if (n == 1) {
 				return x;
