@@ -1,7 +1,7 @@
 namespace Tool.Compet.Core {
-	/// Common build-config which be shared between all projects.
+	/// Common build-config which be shared between all projects/libraries.
 	public class DkBuildConfig {
-		/// The app should provide variable `DEBUG` to enable this constant.
+		/// The app/library should provide variable `DEBUG` to enable this constant.
 		#if DEBUG
 			public const bool DEBUG = true;
 		#else
