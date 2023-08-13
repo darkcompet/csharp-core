@@ -28,7 +28,10 @@ namespace Tool.Compet.Core {
 		/// @return Epoch seconds of UTC-now (number of seconds has elapsed from 1970-01-01T00:00:00.000Z).
 		public static long currentUnixUtcTimeInSeconds => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
+		/// Convert unix time (seconds) that elapsed from epoch time.
 		public static DateTime ConvertUnixTimeSecondsToUtcDatetime(long seconds) => DateTimeOffset.FromUnixTimeSeconds(seconds).UtcDateTime;
-		public static DateTime FromUnixTimeMillisecondsToUtcDatetime(long millis) => DateTimeOffset.FromUnixTimeMilliseconds(millis).UtcDateTime;
+
+		/// Convert unix time (milliseconds) that elapsed from epoch time.
+		public static DateTime ConvertUnixTimeMillisecondsToUtcDatetime(long millis) => DateTimeOffset.FromUnixTimeMilliseconds(millis).UtcDateTime;
 	}
 }
