@@ -53,5 +53,10 @@ namespace Tool.Compet.Core {
 		}
 
 		public List<string> InternalKeys => this._keys;
+
+		public void Clear() {
+			this._map.Clear();
+			this._keys.Clear();
+		}
 	}
 }
