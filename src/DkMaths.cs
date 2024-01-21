@@ -104,6 +104,6 @@ public class DkMaths {
 	}
 
 	public static bool IsDigit(char ch) {
-		return '0' <= ch && ch <= '9';
+		return ch is >= '0' and <= '9';
 	}
 }
