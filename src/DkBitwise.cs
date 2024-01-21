@@ -13,16 +13,13 @@ public class DkBitwise {
 
 	/// <summary>
 	/// Calculate number of bit 1 in given number.
+	/// Ref:
+	/// https://github.com/dotnet/corert/blob/master/src/System.Private.CoreLib/shared/System/Numerics/BitOperations.cs
+	/// https://gist.github.com/Plutor/2002457
 	/// </summary>
-	/// <param name="x"></param>
+	/// <param name="num"></param>
 	/// <returns></returns>
-	public static int BitCount(int x) {
-		var count = 0;
-		for (var index = 0; index < 32; ++index) {
-			if (((x >> index) & 1) == 1) {
-				++count;
-			}
-		}
-		return count;
+	public static int BitCount(uint num) {
+		return System.Numerics.BitOperations.PopCount(num);
 	}
 }
