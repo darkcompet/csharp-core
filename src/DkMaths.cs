@@ -63,6 +63,22 @@ public class DkMaths {
 		return k - 1;
 	}
 
+	/// <summary>
+	/// Find largest k such that: X^k <= n.
+	/// Time: O(logN)
+	/// </summary>
+	/// <param name="n"></param>
+	/// <param name="x"></param>
+	/// <returns></returns>
+	public static int FloorLogX(long n, long x) {
+		var k = 0;
+		var mul = 1L;
+		while (mul <= n) {
+			++k;
+			mul *= x;
+		}
+		return k - 1;
+	}
 
 	/// <summary>
 	/// For any integer N, this finds lowest number k such that: 2^k >= N.
@@ -74,6 +90,23 @@ public class DkMaths {
 		var k = 0;
 		while ((1L << k) < n) {
 			++k;
+		}
+		return k;
+	}
+
+	/// <summary>
+	/// Find lowest k such that: X^k >= n
+	/// Time: O(logN)
+	/// </summary>
+	/// <param name="n"></param>
+	/// <param name="x"></param>
+	/// <returns></returns>
+	public static int CeilLogX(long n, long x) {
+		var k = 0;
+		var mul = 1L;
+		while (mul < n) {
+			++k;
+			mul *= x;
 		}
 		return k;
 	}
