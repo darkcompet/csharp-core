@@ -12,7 +12,7 @@ using System.Threading;
 /// </summary>
 /// <typeparam name="T">The type of the items in the collection.</typeparam>
 /// <remarks>
-/// All public members of <see cref="DkConcurrentHashSet{T}"/> are thread-safe and may be used
+/// All public members of <see cref="DkConcurrentHashSet{T}"/> are thread-safe and can be used
 /// concurrently from multiple threads.
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
