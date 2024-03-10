@@ -1,5 +1,7 @@
 namespace Tool.Compet.Core;
 
+using System.Globalization;
+
 /// Extension for string.
 public static class DkDateTimes {
 	public const string FMT_DATE = "yyyy-MM-dd";
@@ -10,7 +12,7 @@ public static class DkDateTimes {
 	/// Ref: https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
 	/// Ref: https://www.c-sharpcorner.com/blogs/date-and-time-format-in-c-sharp-programming1
 	public static string FormatDk(this DateTime me, string? format = FMT_DATETIME) {
-		return me.ToString(format);
+		return me.ToString(format, CultureInfo.InvariantCulture);
 	}
 
 	/// Ref: https://learn.microsoft.com/en-us/dotnet/api/system.datetimeoffset.tounixtimeseconds?view=net-7.0
@@ -30,8 +32,12 @@ public static class DkDateTimes {
 	public static long currentUnixUtcTimeInSeconds => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 	/// Convert unix time (seconds) that elapsed from epoch time.
-	public static DateTime ConvertUnixTimeSecondsToUtcDatetime(long seconds) => DateTimeOffset.FromUnixTimeSeconds(seconds).UtcDateTime;
+	public static DateTime ConvertUnixTimeSecondsToUtcDatetime(long seconds) {
+		return DateTimeOffset.FromUnixTimeSeconds(seconds).UtcDateTime;
+	}
 
 	/// Convert unix time (milliseconds) that elapsed from epoch time.
-	public static DateTime ConvertUnixTimeMillisecondsToUtcDatetime(long millis) => DateTimeOffset.FromUnixTimeMilliseconds(millis).UtcDateTime;
+	public static DateTime ConvertUnixTimeMillisecondsToUtcDatetime(long millis) {
+		return DateTimeOffset.FromUnixTimeMilliseconds(millis).UtcDateTime;
+	}
 }
