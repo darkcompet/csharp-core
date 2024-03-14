@@ -42,7 +42,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 	/// generic interface by using a constructor that accepts a comparer parameter;
 	/// if you do not specify one, the default generic equality comparer <see cref="EqualityComparer{T}.Default" /> is used.
 	/// </remarks>
-	public IEqualityComparer<T> Comparer => _comparer;
+	public IEqualityComparer<T> Comparer => this._comparer;
 
 	/// <summary>
 	/// Gets the number of items contained in the <see
@@ -58,15 +58,15 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 			var count = 0;
 			var acquiredLocks = 0;
 			try {
-				AcquireAllLocks(ref acquiredLocks);
+				this.AcquireAllLocks(ref acquiredLocks);
 
-				var countPerLocks = _tables.CountPerLock;
+				var countPerLocks = this._tables.CountPerLock;
 				for (var i = 0; i < countPerLocks.Length; i++) {
 					count += countPerLocks[i];
 				}
 			}
 			finally {
-				ReleaseLocks(0, acquiredLocks);
+				this.ReleaseLocks(0, acquiredLocks);
 			}
 
 			return count;
@@ -80,18 +80,18 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 	/// false.</value>
 	public bool IsEmpty {
 		get {
-			if (!AreAllBucketsEmpty()) {
+			if (!this.AreAllBucketsEmpty()) {
 				return false;
 			}
 
 			var acquiredLocks = 0;
 			try {
-				AcquireAllLocks(ref acquiredLocks);
+				this.AcquireAllLocks(ref acquiredLocks);
 
-				return AreAllBucketsEmpty();
+				return this.AreAllBucketsEmpty();
 			}
 			finally {
-				ReleaseLocks(0, acquiredLocks);
+				this.ReleaseLocks(0, acquiredLocks);
 			}
 		}
 	}
@@ -172,7 +172,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 
-		InitializeFromCollection(collection);
+		this.InitializeFromCollection(collection);
 	}
 
 
@@ -199,7 +199,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 
-		InitializeFromCollection(collection);
+		this.InitializeFromCollection(collection);
 	}
 
 	/// <summary>
@@ -241,11 +241,11 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 
 		var countPerLock = new int[locks.Length];
 		var buckets = new Node[capacity];
-		_tables = new Tables(buckets, locks, countPerLock);
+		this._tables = new Tables(buckets, locks, countPerLock);
 
-		_growLockArray = growLockArray;
-		_budget = buckets.Length / locks.Length;
-		_comparer = comparer ?? EqualityComparer<T>.Default;
+		this._growLockArray = growLockArray;
+		this._budget = buckets.Length / locks.Length;
+		this._comparer = comparer ?? EqualityComparer<T>.Default;
 	}
 
 	/// <summary>
@@ -257,7 +257,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 	/// <exception cref="OverflowException">The <see cref="DkConcurrentHashSet{T}"/>
 	/// contains too many items.</exception>
 	public bool Add(T item) =>
-			AddInternal(item, _comparer.GetHashCode(item), true);
+			this.AddInternal(item, this._comparer.GetHashCode(item), true);
 
 	/// <summary>
 	/// Removes all items from the <see cref="DkConcurrentHashSet{T}"/>.
@@ -265,19 +265,19 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 	public void Clear() {
 		var locksAcquired = 0;
 		try {
-			AcquireAllLocks(ref locksAcquired);
+			this.AcquireAllLocks(ref locksAcquired);
 
-			if (AreAllBucketsEmpty()) {
+			if (this.AreAllBucketsEmpty()) {
 				return;
 			}
 
-			var tables = _tables;
+			var tables = this._tables;
 			var newTables = new Tables(new Node[DefaultCapacity], tables.Locks, new int[tables.CountPerLock.Length]);
-			_tables = newTables;
-			_budget = Math.Max(1, newTables.Buckets.Length / newTables.Locks.Length);
+			this._tables = newTables;
+			this._budget = Math.Max(1, newTables.Buckets.Length / newTables.Locks.Length);
 		}
 		finally {
-			ReleaseLocks(0, locksAcquired);
+			this.ReleaseLocks(0, locksAcquired);
 		}
 	}
 
@@ -287,7 +287,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 	/// </summary>
 	/// <param name="item">The item to locate in the <see cref="DkConcurrentHashSet{T}"/>.</param>
 	/// <returns>true if the <see cref="DkConcurrentHashSet{T}"/> contains the item; otherwise, false.</returns>
-	public bool Contains(T item) => TryGetValue(item, out _);
+	public bool Contains(T item) => this.TryGetValue(item, out _);
 
 	/// <summary>
 	/// Searches the <see cref="DkConcurrentHashSet{T}"/> for a given value and returns the equal value it finds, if any.
@@ -302,10 +302,10 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 	/// comparer functions indicate they are equal.
 	/// </remarks>
 	public bool TryGetValue(T equalValue, [MaybeNullWhen(false)] out T actualValue) {
-		var hashcode = _comparer.GetHashCode(equalValue);
+		var hashcode = this._comparer.GetHashCode(equalValue);
 
 		// We must capture the _buckets field in a local variable. It is set to a new table on each table resize.
-		var tables = _tables;
+		var tables = this._tables;
 
 		var bucketNo = GetBucket(hashcode, tables.Buckets.Length);
 
@@ -314,7 +314,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		var current = Volatile.Read(ref tables.Buckets[bucketNo]);
 
 		while (current != null) {
-			if (hashcode == current.Hashcode && _comparer.Equals(current.Item, equalValue)) {
+			if (hashcode == current.Hashcode && this._comparer.Equals(current.Item, equalValue)) {
 				actualValue = current.Item;
 				return true;
 			}
@@ -332,16 +332,16 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 	/// <param name="item">The item to remove.</param>
 	/// <returns>true if an item was removed successfully; otherwise, false.</returns>
 	public bool TryRemove(T item) {
-		var hashcode = _comparer.GetHashCode(item);
+		var hashcode = this._comparer.GetHashCode(item);
 		while (true) {
-			var tables = _tables;
+			var tables = this._tables;
 
 			GetBucketAndLockNo(hashcode, out int bucketNo, out int lockNo, tables.Buckets.Length, tables.Locks.Length);
 
 			lock (tables.Locks[lockNo]) {
 				// If the table just got resized, we may not be holding the right lock, and must retry.
 				// This should be a rare occurrence.
-				if (tables != _tables) {
+				if (tables != this._tables) {
 					continue;
 				}
 
@@ -349,7 +349,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 				for (var current = tables.Buckets[bucketNo]; current != null; current = current.Next) {
 					Debug.Assert((previous == null && current == tables.Buckets[bucketNo]) || previous!.Next == current);
 
-					if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item)) {
+					if (hashcode == current.Hashcode && this._comparer.Equals(current.Item, item)) {
 						if (previous == null) {
 							Volatile.Write(ref tables.Buckets[bucketNo], current.Next);
 						}
@@ -418,12 +418,12 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		/// Constructs an enumerator for <see cref="DkConcurrentHashSet{T}" />.
 		/// </summary>
 		public Enumerator(DkConcurrentHashSet<T> set) {
-			_set = set;
-			_buckets = null;
-			_node = null;
-			Current = default!;
-			_i = -1;
-			_state = StateUninitialized;
+			this._set = set;
+			this._buckets = null;
+			this._node = null;
+			this.Current = default!;
+			this._i = -1;
+			this._state = StateUninitialized;
 		}
 
 		/// <summary>
@@ -432,17 +432,17 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		/// <value>The element in the collection at the current position of the enumerator.</value>
 		public T Current { get; private set; }
 
-		object? IEnumerator.Current => Current;
+		object? IEnumerator.Current => this.Current;
 
 		/// <summary>
 		/// Sets the enumerator to its initial position, which is before the first element in the collection.
 		/// </summary>
 		public void Reset() {
-			_buckets = null;
-			_node = null;
-			Current = default!;
-			_i = -1;
-			_state = StateUninitialized;
+			this._buckets = null;
+			this._node = null;
+			this.Current = default!;
+			this._i = -1;
+			this._state = StateUninitialized;
 		}
 
 		/// <summary>
@@ -455,43 +455,43 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		/// </summary>
 		/// <returns>true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
 		public bool MoveNext() {
-			switch (_state) {
+			switch (this._state) {
 				case StateUninitialized:
-					_buckets = _set._tables.Buckets;
-					_i = -1;
+					this._buckets = this._set._tables.Buckets;
+					this._i = -1;
 					goto case StateOuterloop;
 
 				case StateOuterloop:
-					Node?[]? buckets = _buckets;
+					Node?[]? buckets = this._buckets;
 					Debug.Assert(buckets != null);
 
-					int i = ++_i;
+					int i = ++this._i;
 					if ((uint)i < (uint)buckets!.Length) {
 						// The Volatile.Read ensures that we have a copy of the reference to buckets[i]:
 						// this protects us from reading fields ('_key', '_value' and '_next') of different instances.
-						_node = Volatile.Read(ref buckets[i]);
-						_state = StateInnerLoop;
+						this._node = Volatile.Read(ref buckets[i]);
+						this._state = StateInnerLoop;
 						goto case StateInnerLoop;
 					}
 					goto default;
 
 				case StateInnerLoop:
-					Node? node = _node;
+					Node? node = this._node;
 					if (node != null) {
-						Current = node.Item;
-						_node = node.Next;
+						this.Current = node.Item;
+						this._node = node.Next;
 						return true;
 					}
 					goto case StateOuterloop;
 
 				default:
-					_state = StateDone;
+					this._state = StateDone;
 					return false;
 			}
 		}
 	}
 
-	void ICollection<T>.Add(T item) => Add(item);
+	void ICollection<T>.Add(T item) => this.Add(item);
 
 	bool ICollection<T>.IsReadOnly => false;
 
@@ -503,11 +503,11 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 
 		var locksAcquired = 0;
 		try {
-			AcquireAllLocks(ref locksAcquired);
+			this.AcquireAllLocks(ref locksAcquired);
 
 			var count = 0;
 
-			var countPerLock = _tables.CountPerLock;
+			var countPerLock = this._tables.CountPerLock;
 			for (var i = 0; i < countPerLock.Length && count >= 0; i++) {
 				count += countPerLock[i];
 			}
@@ -517,29 +517,29 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 				throw new ArgumentException("The index is equal to or greater than the length of the array, or the number of elements in the set is greater than the available space from index to the end of the destination array.");
 			}
 
-			CopyToItems(array, arrayIndex);
+			this.CopyToItems(array, arrayIndex);
 		}
 		finally {
-			ReleaseLocks(0, locksAcquired);
+			this.ReleaseLocks(0, locksAcquired);
 		}
 	}
 
-	bool ICollection<T>.Remove(T item) => TryRemove(item);
+	bool ICollection<T>.Remove(T item) => this.TryRemove(item);
 
 	private void InitializeFromCollection(IEnumerable<T> collection) {
 		foreach (var item in collection) {
-			AddInternal(item, _comparer.GetHashCode(item), false);
+			this.AddInternal(item, this._comparer.GetHashCode(item), false);
 		}
 
-		if (_budget == 0) {
-			var tables = _tables;
-			_budget = tables.Buckets.Length / tables.Locks.Length;
+		if (this._budget == 0) {
+			var tables = this._tables;
+			this._budget = tables.Buckets.Length / tables.Locks.Length;
 		}
 	}
 
 	private bool AddInternal(T item, int hashcode, bool acquireLock) {
 		while (true) {
-			var tables = _tables;
+			var tables = this._tables;
 
 			GetBucketAndLockNo(hashcode, out int bucketNo, out int lockNo, tables.Buckets.Length, tables.Locks.Length);
 
@@ -551,7 +551,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 
 				// If the table just got resized, we may not be holding the right lock, and must retry.
 				// This should be a rare occurrence.
-				if (tables != _tables) {
+				if (tables != this._tables) {
 					continue;
 				}
 
@@ -559,7 +559,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 				Node? previous = null;
 				for (var current = tables.Buckets[bucketNo]; current != null; current = current.Next) {
 					Debug.Assert(previous == null && current == tables.Buckets[bucketNo] || previous!.Next == current);
-					if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item)) {
+					if (hashcode == current.Hashcode && this._comparer.Equals(current.Item, item)) {
 						return false;
 					}
 					previous = current;
@@ -576,7 +576,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 				// It is also possible that GrowTable will increase the budget but won't resize the bucket table.
 				// That happens if the bucket table is found to be poorly utilized due to a bad hash function.
 				//
-				if (tables.CountPerLock[lockNo] > _budget) {
+				if (tables.CountPerLock[lockNo] > this._budget) {
 					resizeDesired = true;
 				}
 			}
@@ -594,7 +594,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 			//   and then verify that the table we passed to it as the argument is still the current table.
 			//
 			if (resizeDesired) {
-				GrowTable(tables);
+				this.GrowTable(tables);
 			}
 
 			return true;
@@ -616,7 +616,7 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 	}
 
 	private bool AreAllBucketsEmpty() {
-		var countPerLock = _tables.CountPerLock;
+		var countPerLock = this._tables.CountPerLock;
 		for (var i = 0; i < countPerLock.Length; i++) {
 			if (countPerLock[i] != 0) {
 				return false;
@@ -631,10 +631,10 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		var locksAcquired = 0;
 		try {
 			// The thread that first obtains _locks[0] will be the one doing the resize operation
-			AcquireLocks(0, 1, ref locksAcquired);
+			this.AcquireLocks(0, 1, ref locksAcquired);
 
 			// Make sure nobody resized the table while we were waiting for lock 0:
-			if (tables != _tables) {
+			if (tables != this._tables) {
 				// We assume that since the table reference is different, it was already resized (or the budget
 				// was adjusted). If we ever decide to do table shrinking, or replace the table for other reasons,
 				// we will have to revisit this logic.
@@ -651,9 +651,9 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 			// If the bucket array is too empty, double the budget instead of resizing the table
 			//
 			if (approxCount < tables.Buckets.Length / 4) {
-				_budget = 2 * _budget;
-				if (_budget < 0) {
-					_budget = int.MaxValue;
+				this._budget = 2 * this._budget;
+				if (this._budget < 0) {
+					this._budget = int.MaxValue;
 				}
 				return;
 			}
@@ -692,16 +692,16 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 				//
 				// (There is one special case that would allow GrowTable() to be called in the future:
 				// calling Clear() on the ConcurrentHashSet will shrink the table and lower the budget.)
-				_budget = int.MaxValue;
+				this._budget = int.MaxValue;
 			}
 
 			// Now acquire all other locks for the table
-			AcquireLocks(1, tables.Locks.Length, ref locksAcquired);
+			this.AcquireLocks(1, tables.Locks.Length, ref locksAcquired);
 
 			var newLocks = tables.Locks;
 
 			// Add more locks
-			if (_growLockArray && tables.Locks.Length < MaxLockNumber) {
+			if (this._growLockArray && tables.Locks.Length < MaxLockNumber) {
 				newLocks = new object[tables.Locks.Length * 2];
 				Array.Copy(tables.Locks, newLocks, tables.Locks.Length);
 				for (var i = tables.Locks.Length; i < newLocks.Length; i++) {
@@ -730,30 +730,30 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 			}
 
 			// Adjust the budget
-			_budget = Math.Max(1, newBuckets.Length / newLocks.Length);
+			this._budget = Math.Max(1, newBuckets.Length / newLocks.Length);
 
 			// Replace tables with the new versions
-			_tables = new Tables(newBuckets, newLocks, newCountPerLock);
+			this._tables = new Tables(newBuckets, newLocks, newCountPerLock);
 		}
 		finally {
 			// Release all locks that we took earlier
-			ReleaseLocks(0, locksAcquired);
+			this.ReleaseLocks(0, locksAcquired);
 		}
 	}
 
 	private void AcquireAllLocks(ref int locksAcquired) {
 		// First, acquire lock 0
-		AcquireLocks(0, 1, ref locksAcquired);
+		this.AcquireLocks(0, 1, ref locksAcquired);
 
 		// Now that we have lock 0, the _locks array will not change (i.e., grow),
 		// and so we can safely read _locks.Length.
-		AcquireLocks(1, _tables.Locks.Length, ref locksAcquired);
-		Debug.Assert(locksAcquired == _tables.Locks.Length);
+		this.AcquireLocks(1, this._tables.Locks.Length, ref locksAcquired);
+		Debug.Assert(locksAcquired == this._tables.Locks.Length);
 	}
 
 	private void AcquireLocks(int fromInclusive, int toExclusive, ref int locksAcquired) {
 		Debug.Assert(fromInclusive <= toExclusive);
-		var locks = _tables.Locks;
+		var locks = this._tables.Locks;
 
 		for (var i = fromInclusive; i < toExclusive; i++) {
 			var lockTaken = false;
@@ -772,12 +772,12 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		Debug.Assert(fromInclusive <= toExclusive);
 
 		for (var i = fromInclusive; i < toExclusive; i++) {
-			Monitor.Exit(_tables.Locks[i]);
+			Monitor.Exit(this._tables.Locks[i]);
 		}
 	}
 
 	private void CopyToItems(T[] array, int index) {
-		var buckets = _tables.Buckets;
+		var buckets = this._tables.Buckets;
 		for (var i = 0; i < buckets.Length; i++) {
 			for (var current = buckets[i]; current != null; current = current.Next) {
 				array[index] = current.Item;
@@ -793,9 +793,9 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		public readonly int[] CountPerLock;
 
 		public Tables(Node?[] buckets, object[] locks, int[] countPerLock) {
-			Buckets = buckets;
-			Locks = locks;
-			CountPerLock = countPerLock;
+			this.Buckets = buckets;
+			this.Locks = locks;
+			this.CountPerLock = countPerLock;
 		}
 	}
 
@@ -806,9 +806,9 @@ public class DkConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> {
 		public volatile Node? Next;
 
 		public Node(T item, int hashcode, Node? next) {
-			Item = item;
-			Hashcode = hashcode;
-			Next = next;
+			this.Item = item;
+			this.Hashcode = hashcode;
+			this.Next = next;
 		}
 	}
 }
