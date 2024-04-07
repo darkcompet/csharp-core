@@ -12,7 +12,7 @@ public class DkBitwise {
 	}
 
 	/// <summary>
-	/// Calculate number of bit 1 in given number. This is also known as pop count.
+	/// Calculate number of bit 1 (pop count) in given number.
 	/// Ref:
 	/// https://github.com/dotnet/corert/blob/master/src/System.Private.CoreLib/shared/System/Numerics/BitOperations.cs
 	/// https://gist.github.com/Plutor/2002457
@@ -42,7 +42,7 @@ public class DkBitwise {
 	}
 
 	/// <summary>
-	/// Set bit (0) at given index.
+	/// Toggle bit (1 -> 0, 0 -> 1) at given index.
 	/// </summary>
 	/// <param name="num">The number</param>
 	/// <param name="index">Rightmost index</param>
